@@ -2,7 +2,7 @@
 
 Code for [Towards a Fairer Non-negative Matrix Factorization](https://arxiv.org/abs/2411.09847) by Lara Kassab, Erin George, Deanna Needell, Haowen Geng, Nika Jafar Nia, and Aoxi Li.
 
-# Using this repository.
+# Using this repository
 
 The code to run our implementation of Fairer-NMF is in `fairnmf.py`.  Use the `FairNMF_MU` and `FairNMF_AM` functions for the multiplicative update and alternating minimization versions, respectively.
 
@@ -18,4 +18,4 @@ When `experiments.ipynb` is ran, the running time is saved as well.  The file `t
 
 # License information
 
-This code is available under the MIT license (see `LICENSE`).  Some of the data in this repository is derived from the "Heart Disease" dataset by Andras Janosi, William Steinbrunn. Matthias Pfisterer, Robert Detrano and the "20 Newsgroups" collected by Ken Lang.  Both of the original datasets are available under the [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode) license.
+This code is available under the MIT license (see `LICENSE`).  Some of the data in this repository is derived from the "Heart Disease" dataset by Andras Janosi, William Steinbrunn. Matthias Pfisterer, and Robert Detrano and the "20 Newsgroups" collected by Ken Lang.  Both of the original datasets are available under the [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode) license.
