@@ -15,3 +15,7 @@ Use the `processed.cleveland.data` file and make sure it is in the same folder a
 Then, run the notebook `experiments.ipynb` to generate the plots after (optionally) running the experiments.  By default, this file loads the experimental data used to create the paper.
 
 When `experiments.ipynb` is ran, the running time is saved as well.  The file `time_plots.ipynb` loads this data and creates the time plots as shown in the paper.
+
+# License information
+
+This code is available under the MIT license (see `LICENSE`).  Some of the data in this repository is derived from the "Heart Disease" dataset by Andras Janosi, William Steinbrunn. Matthias Pfisterer, Robert Detrano and the "20 Newsgroups" collected by Ken Lang.  Both of the original datasets are available under the [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode) license.
