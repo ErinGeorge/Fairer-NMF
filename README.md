@@ -4,7 +4,7 @@ Code for [Towards a Fairer Non-negative Matrix Factorization](https://arxiv.org/
 
 # Using this repository.
 
-The code to run our implementation of Fairer-NMF is in `fairnmf.py`.  Use the `FairNMF_MU` and `FairNMF_AM` for the multiplicative update and alternating minimization versions, respectively.
+The code to run our implementation of Fairer-NMF is in `fairnmf.py`.  Use the `FairNMF_MU` and `FairNMF_AM` functions for the multiplicative update and alternating minimization versions, respectively.
 
 To reproduce the experiments in the paper, make sure to install the appropriate packages (numpy, pandas, sklearn, matplotlib, nltk, and tqdm) and obtain the datasets.  The 20news dataset is included in scikit-learn, and the heart disease dataset can be downloaded from the following link:
 
