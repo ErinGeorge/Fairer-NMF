@@ -26,9 +26,6 @@ def filter_format(d):
     return {k: v for k, v in d.items() if k not in ['marker']}
 
 def load_dataset(data_str):
-    '''
-    Loads the datasets.  Valid choices for data_str are '20n', 'hd', 'ortho1', and 'ortho2'.
-    '''
     if data_str == "20n":
         # import the data
         dataset = fetch_20newsgroups(shuffle=True, random_state=1, remove=('headers', 'footers', 'quotes'))
@@ -119,7 +116,7 @@ def load_dataset(data_str):
                 'formats': formats,
                 'indices': indices,
                 'ranks': range(1, 11)}
-    
+
     elif data_str == "ortho1":
         # Groups of various sizes and ranks
         m = 500
@@ -218,7 +215,7 @@ def load_dataset(data_str):
                 'formats': formats,
                 'indices': indices,
                 'ranks': range(1, 7)}
-        
+
     else:
         raise ValueError("Unknown dataset")
     
@@ -289,19 +286,47 @@ def exp_Fairer_NMF(data, alg, num_trials=10, max_iter=None, rel_tol=1e-4):
     
     return f_losses, 100*f_errors, f_times
 
-def make_plots(data, plot_vals, ylabel, file_names = None):
-    '''
-    Plots the data for the experiments.
-    '''
+def exp_MU_convergence(data, rank, c_rule, num_trials=100, max_iter=1000, rel_tol=None):
+    fnmf_alg = fairnmf.FairNMF_MU
+
+    Xs = data['Xs']
+    r = data['ranks'][-1]
+    
+    norms = np.array([np.linalg.norm(X, ord='fro') for X in Xs]).reshape((-1,1))
+
+    f_losses   = np.zeros((len(Xs), max_iter, num_trials))
+    f_errors   = np.zeros((len(Xs), max_iter, num_trials))
+
+    for trial in tqdm(range(num_trials)):
+
+        _, _, losses, min_errs = fnmf_alg(Xs, r, max_iter=max_iter, rel_tol=rel_tol, c_rule=c_rule)
+
+        errs = (losses + min_errs.reshape((-1,1))) * norms
+
+        f_losses[:,:,trial] = losses
+        f_errors[:,:,trial] = errs
+
+    return f_losses, f_errors
+
+def make_plots(data, plot_vals, ylabel, file_names = None, xaxis='ranks', use_markers=True):
     plt.rcParams.update({'font.size': 15})
 
     Xs = data['Xs']
     formats = data['formats']
     names = data['names']
-    ranks = data['ranks']
+
+    if xaxis == 'ranks':
+        x = data['ranks']
+        xlabel = 'Rank'
+    elif xaxis == 'iter':
+        x = np.arange(plot_vals[0].shape[1])
+        xlabel = 'Iteration'
 
     if file_names is None:
-        file_names = [None] * len(Xs)
+        file_names = [None] * len(plot_vals)
+
+    if not use_markers:
+        formats = [filter_format(f) for f in formats]
         
     ylim_all = None
 
@@ -310,8 +335,8 @@ def make_plots(data, plot_vals, ylabel, file_names = None):
         pv_std = np.std(pv, axis=2)
 
         for i, f, n in zip(range(len(Xs)), formats, names):
-            plt.plot(ranks, pv_avg[i,:], **f, label=n, linewidth='1.75')
-            plt.fill_between(ranks,
+            plt.plot(x, pv_avg[i,:], **f, label=n, linewidth='1.75')
+            plt.fill_between(x,
                              pv_avg[i,:]-pv_std[i,:],
                              pv_avg[i,:]+pv_std[i,:],
                              **filter_format(f), alpha=0.2)
@@ -322,7 +347,7 @@ def make_plots(data, plot_vals, ylabel, file_names = None):
         else:
             ylim_all = [min(ylim_all[0],ylim[0]),max(ylim_all[1],ylim[1])]
         
-        plt.xlabel("Rank")
+        plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.legend(fontsize=13)
@@ -334,15 +359,15 @@ def make_plots(data, plot_vals, ylabel, file_names = None):
         pv_avg = np.mean(pv, axis=2)
         pv_std = np.std(pv, axis=2)
         for i, f, n in zip(range(len(Xs)), formats, names):
-            plt.plot(ranks, pv_avg[i,:], **f, label=n, linewidth='1.75')
-            plt.fill_between(ranks,
+            plt.plot(x, pv_avg[i,:], **f, label=n, linewidth='1.75')
+            plt.fill_between(x,
                              pv_avg[i,:]-pv_std[i,:],
                              pv_avg[i,:]+pv_std[i,:],
                              **filter_format(f), alpha=0.2)
     
         plt.gca().set_ylim(ylim_all)
         
-        plt.xlabel("Rank")
+        plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.legend(fontsize=13)
